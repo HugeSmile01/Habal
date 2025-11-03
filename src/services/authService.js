@@ -34,7 +34,7 @@ export const registerUser = async (email, password, userData) => {
       // Device and consent information
       deviceInfo: userData.deviceInfo || null,
       consents: userData.consents || null,
-      registrationTimestamp: userData.registrationTimestamp || new Date().toISOString(),
+      registrationTimestamp: userData.registrationTimestamp,
       // Driver-specific fields
       ...(userData.userType === USER_TYPES.DRIVER && {
         vehicleType: userData.vehicleType,

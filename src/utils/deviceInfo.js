@@ -168,7 +168,7 @@ export const generateDeviceFingerprint = () => {
   for (let i = 0; i < fingerprintData.length; i++) {
     const char = fingerprintData.charCodeAt(i);
     hash = ((hash << 5) - hash) + char;
-    hash = hash & hash; // Convert to 32bit integer
+    hash = hash | 0; // Convert to 32bit integer
   }
   
   return Math.abs(hash).toString(36);

@@ -57,7 +57,7 @@ For full documentation, see [SETUP.md](SETUP.md)
 
 ## Citation
 
-© {new Date().getFullYear()} Habal. All rights reserved.
+© 2025 Habal. All rights reserved.
 
 **Developed by John Rish Ladica**
 
