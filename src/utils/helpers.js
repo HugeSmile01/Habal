@@ -1,3 +1,7 @@
+// Constants
+const MIN_PHONE_NUMBER_LENGTH = 10;
+const GEOLOCATION_TIMEOUT_MS = 10000;
+
 /**
  * Format currency for display
  */
@@ -44,7 +48,7 @@ export const isValidEmail = (email) => {
  */
 export const isValidPhone = (phone) => {
   const phoneRegex = /^[\d\s\-\+\(\)]+$/;
-  return phoneRegex.test(phone) && phone.replace(/\D/g, '').length >= 10;
+  return phoneRegex.test(phone) && phone.replace(/\D/g, '').length >= MIN_PHONE_NUMBER_LENGTH;
 };
 
 /**
@@ -76,7 +80,7 @@ export const getUserLocation = () => {
         },
         {
           enableHighAccuracy: true,
-          timeout: 10000,
+          timeout: GEOLOCATION_TIMEOUT_MS,
           maximumAge: 0
         }
       );
@@ -105,7 +109,7 @@ export const watchUserLocation = (callback, errorCallback) => {
     errorCallback,
     {
       enableHighAccuracy: true,
-      timeout: 10000,
+      timeout: GEOLOCATION_TIMEOUT_MS,
       maximumAge: 0
     }
   );

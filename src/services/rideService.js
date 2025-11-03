@@ -13,6 +13,11 @@ import {
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
 
+// Constants
+const EARTH_RADIUS_KM = 6371; // Radius of the Earth in kilometers
+const DEFAULT_BASE_FARE = 50; // Base fare in local currency
+const DEFAULT_PER_KM_RATE = 15; // Rate per kilometer in local currency
+
 // Ride status constants
 export const RIDE_STATUS = {
   REQUESTED: 'requested',
@@ -28,7 +33,7 @@ export const RIDE_STATUS = {
  * Returns distance in kilometers
  */
 export const calculateDistance = (lat1, lon1, lat2, lon2) => {
-  const R = 6371; // Radius of the Earth in kilometers
+  const R = EARTH_RADIUS_KM;
   const dLat = (lat2 - lat1) * Math.PI / 180;
   const dLon = (lon2 - lon1) * Math.PI / 180;
   const a = 
@@ -44,7 +49,7 @@ export const calculateDistance = (lat1, lon1, lat2, lon2) => {
  * Calculate ride fee based on distance
  * Base fare + per kilometer rate
  */
-export const calculateFee = (distance, baseFare = 50, perKmRate = 15) => {
+export const calculateFee = (distance, baseFare = DEFAULT_BASE_FARE, perKmRate = DEFAULT_PER_KM_RATE) => {
   const fee = baseFare + (distance * perKmRate);
   return Math.round(fee * 100) / 100; // Round to 2 decimal places
 };
