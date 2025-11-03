@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { onAuthChange } from './services/authService';
 import { signOut } from './services/authService';
 import AuthPage from './pages/AuthPage';
-import CitizenPage from './pages/CitizenPage';
+import PassengerPage from './pages/PassengerPage';
 import DriverPage from './pages/DriverPage';
 import './App.css';
 
@@ -58,7 +58,7 @@ function App() {
   if (user.userType === 'driver') {
     return <DriverPage user={user} onLogout={handleLogout} />;
   } else {
-    return <CitizenPage user={user} onLogout={handleLogout} />;
+    return <PassengerPage user={user} onLogout={handleLogout} />;
   }
 }
 

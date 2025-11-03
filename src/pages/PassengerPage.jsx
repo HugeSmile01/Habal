@@ -3,9 +3,9 @@ import RideRequestForm from '../components/RideRequestForm';
 import About from '../components/About';
 import { getUserRides } from '../services/rideService';
 import { formatDistance, formatCurrency, formatDateTime } from '../utils/helpers';
-import './CitizenPage.css';
+import './PassengerPage.css';
 
-const CitizenPage = ({ user, onLogout }) => {
+const PassengerPage = ({ user, onLogout }) => {
   const [showRequestForm, setShowRequestForm] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
   const [rides, setRides] = useState([]);
@@ -16,7 +16,7 @@ const CitizenPage = ({ user, onLogout }) => {
   }, []);
 
   const loadRides = async () => {
-    const result = await getUserRides(user.uid, 'citizen');
+    const result = await getUserRides(user.uid, 'passenger');
     if (result.success) {
       setRides(result.rides);
     }
@@ -54,7 +54,7 @@ const CitizenPage = ({ user, onLogout }) => {
   };
 
   return (
-    <div className="citizen-page">
+    <div className="passenger-page">
       <header className="page-header">
         <div className="header-content">
           <h1>Welcome, {user.fullName}</h1>
@@ -167,4 +167,4 @@ const CitizenPage = ({ user, onLogout }) => {
   );
 };
 
-export default CitizenPage;
+export default PassengerPage;

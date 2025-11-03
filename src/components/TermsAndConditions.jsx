@@ -19,7 +19,7 @@ const TermsAndConditions = ({ onClose }) => {
 
           <section>
             <h3>2. Service Description</h3>
-            <p>Habal is a local ride-hailing platform that connects passengers (citizens) with drivers. The platform facilitates transportation services but does not provide transportation services directly.</p>
+            <p>Habal is a local ride-hailing platform that connects passengers with drivers. The platform facilitates transportation services but does not provide transportation services directly.</p>
           </section>
 
           <section>

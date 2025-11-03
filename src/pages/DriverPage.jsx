@@ -131,11 +131,11 @@ const DriverPage = ({ user, onLogout }) => {
                       <div className="ride-info">
                         <div className="info-row">
                           <span className="label">Passenger:</span>
-                          <span>{ride.citizenName}</span>
+                          <span>{ride.passengerName}</span>
                         </div>
                         <div className="info-row">
                           <span className="label">Phone:</span>
-                          <span>{ride.citizenPhone}</span>
+                          <span>{ride.passengerPhone}</span>
                         </div>
                         <div className="info-row">
                           <span className="label">From:</span>
@@ -194,7 +194,7 @@ const DriverPage = ({ user, onLogout }) => {
                       <div className="ride-info">
                         <div className="info-row">
                           <span className="label">Passenger:</span>
-                          <span>{ride.citizenName}</span>
+                          <span>{ride.passengerName}</span>
                         </div>
                         <div className="info-row">
                           <span className="label">Distance:</span>
