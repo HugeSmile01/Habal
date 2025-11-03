@@ -90,3 +90,113 @@
 .link-btn:hover {
   color: #45a049;
 }
+
+/* Consent Section Styles */
+.consent-section {
+  margin: 30px 0;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+.consent-title {
+  margin: 0 0 20px 0;
+  color: #333;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.consent-item {
+  margin-bottom: 15px;
+}
+
+.consent-label {
+  display: flex;
+  align-items: flex-start;
+  cursor: pointer;
+  color: #555;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.consent-label input[type="checkbox"] {
+  width: auto;
+  margin-right: 10px;
+  margin-top: 3px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.consent-label span {
+  flex: 1;
+}
+
+.link-btn-inline {
+  background: none;
+  border: none;
+  color: #4CAF50;
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 14px;
+  padding: 0;
+  font-family: inherit;
+}
+
+.link-btn-inline:hover {
+  color: #45a049;
+}
+
+.warning-consent {
+  background: #fff3cd;
+  padding: 15px;
+  border-radius: 6px;
+  border: 1px solid #ffc107;
+  margin-top: 20px;
+}
+
+.warning-consent .consent-label {
+  color: #333;
+}
+
+.warning-consent strong {
+  color: #d32f2f;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .auth-form {
+    margin: 20px;
+    padding: 20px;
+  }
+
+  .consent-section {
+    padding: 15px;
+  }
+
+  .consent-label {
+    font-size: 13px;
+  }
+
+  .link-btn-inline {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-form {
+    margin: 10px;
+    padding: 15px;
+  }
+
+  .form-group input,
+  .form-group select {
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  .consent-section {
+    padding: 12px;
+  }
+}
+

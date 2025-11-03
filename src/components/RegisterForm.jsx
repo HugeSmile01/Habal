@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { registerUser, USER_TYPES } from '../services/authService';
+import PrivacyPolicy from './PrivacyPolicy';
+import TermsAndConditions from './TermsAndConditions';
+import { collectDeviceInfo } from '../utils/deviceInfo';
 import './AuthForm.css';
 
 const RegisterForm = ({ onSuccess, onSwitchToLogin }) => {
@@ -19,12 +22,27 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }) => {
     homeAddress: ''
   });
 
+  const [consents, setConsents] = useState({
+    privacyPolicy: false,
+    termsAndConditions: false,
+    deviceInfoCollection: false,
+    locationTracking: false,
+    understandConsequences: false
+  });
+
+  const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleConsentChange = (e) => {
+    const { name, checked } = e.target;
+    setConsents(prev => ({ ...prev, [name]: checked }));
   };
 
   const handleSubmit = async (e) => {
@@ -42,9 +60,44 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }) => {
       return;
     }
 
+    // Check all consents
+    if (!consents.privacyPolicy) {
+      setError('You must accept the Privacy Policy to register');
+      return;
+    }
+
+    if (!consents.termsAndConditions) {
+      setError('You must accept the Terms and Conditions to register');
+      return;
+    }
+
+    if (!consents.deviceInfoCollection) {
+      setError('You must consent to device information collection for security purposes');
+      return;
+    }
+
+    if (!consents.locationTracking) {
+      setError('You must consent to location tracking to use the ride-hailing service');
+      return;
+    }
+
+    if (!consents.understandConsequences) {
+      setError('You must acknowledge the consequences of misuse');
+      return;
+    }
+
     setLoading(true);
 
-    const result = await registerUser(formData.email, formData.password, formData);
+    // Collect device information
+    const deviceInfo = collectDeviceInfo();
+
+    // Register user with device info
+    const result = await registerUser(formData.email, formData.password, {
+      ...formData,
+      deviceInfo,
+      consents,
+      registrationTimestamp: new Date().toISOString()
+    });
 
     if (result.success) {
       onSuccess(result.user);
@@ -196,6 +249,104 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }) => {
           </div>
         )}
 
+        {/* Consent Section */}
+        <div className="consent-section">
+          <h3 className="consent-title">Required Consents</h3>
+          
+          <div className="consent-item">
+            <label className="consent-label">
+              <input
+                type="checkbox"
+                name="privacyPolicy"
+                checked={consents.privacyPolicy}
+                onChange={handleConsentChange}
+                required
+              />
+              <span>
+                I have read and agree to the{' '}
+                <button 
+                  type="button" 
+                  className="link-btn-inline"
+                  onClick={() => setShowPrivacyPolicy(true)}
+                >
+                  Privacy Policy
+                </button>
+              </span>
+            </label>
+          </div>
+
+          <div className="consent-item">
+            <label className="consent-label">
+              <input
+                type="checkbox"
+                name="termsAndConditions"
+                checked={consents.termsAndConditions}
+                onChange={handleConsentChange}
+                required
+              />
+              <span>
+                I have read and agree to the{' '}
+                <button 
+                  type="button" 
+                  className="link-btn-inline"
+                  onClick={() => setShowTerms(true)}
+                >
+                  Terms and Conditions
+                </button>
+              </span>
+            </label>
+          </div>
+
+          <div className="consent-item">
+            <label className="consent-label">
+              <input
+                type="checkbox"
+                name="deviceInfoCollection"
+                checked={consents.deviceInfoCollection}
+                onChange={handleConsentChange}
+                required
+              />
+              <span>
+                I consent to the collection of my device information (browser, operating system, device type) 
+                for security and fraud prevention purposes
+              </span>
+            </label>
+          </div>
+
+          <div className="consent-item">
+            <label className="consent-label">
+              <input
+                type="checkbox"
+                name="locationTracking"
+                checked={consents.locationTracking}
+                onChange={handleConsentChange}
+                required
+              />
+              <span>
+                I consent to real-time location tracking during rides for safety and service delivery
+              </span>
+            </label>
+          </div>
+
+          <div className="consent-item warning-consent">
+            <label className="consent-label">
+              <input
+                type="checkbox"
+                name="understandConsequences"
+                checked={consents.understandConsequences}
+                onChange={handleConsentChange}
+                required
+              />
+              <span>
+                <strong>I understand that misuse of the Habal platform</strong> (including fake bookings, 
+                false information, or fraudulent activities) may result in account termination, legal action, 
+                and cooperation with law enforcement. I understand that my device information and location 
+                data can be used as evidence in investigations.
+              </span>
+            </label>
+          </div>
+        </div>
+
         <button type="submit" disabled={loading} className="submit-btn">
           {loading ? 'Registering...' : 'Register'}
         </button>
@@ -205,6 +356,10 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }) => {
         Already have an account? 
         <button onClick={onSwitchToLogin} className="link-btn">Login here</button>
       </div>
+
+      {/* Legal Documents Modals */}
+      {showPrivacyPolicy && <PrivacyPolicy onClose={() => setShowPrivacyPolicy(false)} />}
+      {showTerms && <TermsAndConditions onClose={() => setShowTerms(false)} />}
     </div>
   );
 };

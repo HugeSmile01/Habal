@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import RideRequestForm from '../components/RideRequestForm';
+import About from '../components/About';
 import { getUserRides } from '../services/rideService';
 import { formatDistance, formatCurrency, formatDateTime } from '../utils/helpers';
 import './CitizenPage.css';
 
 const CitizenPage = ({ user, onLogout }) => {
   const [showRequestForm, setShowRequestForm] = useState(false);
+  const [showAbout, setShowAbout] = useState(false);
   const [rides, setRides] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -56,7 +58,10 @@ const CitizenPage = ({ user, onLogout }) => {
       <header className="page-header">
         <div className="header-content">
           <h1>Welcome, {user.fullName}</h1>
-          <button onClick={onLogout} className="logout-btn">Logout</button>
+          <div className="header-actions">
+            <button onClick={() => setShowAbout(true)} className="about-link-btn">About</button>
+            <button onClick={onLogout} className="logout-btn">Logout</button>
+          </div>
         </div>
       </header>
 
@@ -150,6 +155,14 @@ const CitizenPage = ({ user, onLogout }) => {
           </>
         )}
       </div>
+
+      {/* Footer */}
+      <footer className="page-footer">
+        <p>© {new Date().getFullYear()} Habal. All rights reserved. | Developed by <strong>John Rish Ladica</strong></p>
+      </footer>
+
+      {/* About Modal */}
+      {showAbout && <About onClose={() => setShowAbout(false)} />}
     </div>
   );
 };

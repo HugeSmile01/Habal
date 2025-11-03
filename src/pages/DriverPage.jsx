@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import DriverDashboard from '../components/DriverDashboard';
+import About from '../components/About';
 import { getUserRides, updateDriverLocation, RIDE_STATUS } from '../services/rideService';
 import { watchUserLocation, clearLocationWatch, formatDistance, formatCurrency, formatDateTime } from '../utils/helpers';
 import './DriverPage.css';
@@ -9,6 +10,7 @@ const DriverPage = ({ user, onLogout }) => {
   const [completedRides, setCompletedRides] = useState([]);
   const [locationWatchId, setLocationWatchId] = useState(null);
   const [showDashboard, setShowDashboard] = useState(true);
+  const [showAbout, setShowAbout] = useState(false);
 
   useEffect(() => {
     loadRides();
@@ -84,7 +86,10 @@ const DriverPage = ({ user, onLogout }) => {
       <header className="page-header">
         <div className="header-content">
           <h1>Driver Dashboard - {user.fullName}</h1>
-          <button onClick={onLogout} className="logout-btn">Logout</button>
+          <div className="header-actions">
+            <button onClick={() => setShowAbout(true)} className="about-link-btn">About</button>
+            <button onClick={onLogout} className="logout-btn">Logout</button>
+          </div>
         </div>
       </header>
 
@@ -215,6 +220,14 @@ const DriverPage = ({ user, onLogout }) => {
           </div>
         )}
       </div>
+
+      {/* Footer */}
+      <footer className="page-footer">
+        <p>© {new Date().getFullYear()} Habal. All rights reserved. | Developed by <strong>John Rish Ladica</strong></p>
+      </footer>
+
+      {/* About Modal */}
+      {showAbout && <About onClose={() => setShowAbout(false)} />}
     </div>
   );
 };
