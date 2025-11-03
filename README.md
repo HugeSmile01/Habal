@@ -3,10 +3,10 @@ A local-based ride-hailing platform focused on safety, user experience, and mobi
 
 ## Quick Start
 
-This is a ride-hailing platform connecting citizens (passengers) with drivers. Built with React and Firebase.
+This is a ride-hailing platform connecting passengers with drivers. Built with React and Firebase.
 
 ### Features
-- 🚗 User registration for Citizens and Drivers
+- 🚗 User registration for Passengers and Drivers
 - 📍 Real-time location tracking for safety
 - 💰 Distance-based fee calculation with transparent pricing
 - 🔒 Secure authentication with Firebase

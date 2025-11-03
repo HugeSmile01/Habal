@@ -69,9 +69,9 @@ const RideRequestForm = ({ user, onSuccess }) => {
     setLoading(true);
 
     const rideData = {
-      citizenId: user.uid,
-      citizenName: user.fullName,
-      citizenPhone: user.phoneNumber,
+      passengerId: user.uid,
+      passengerName: user.fullName,
+      passengerPhone: user.phoneNumber,
       pickupLocation: formData.pickupLocation,
       destinationLocation: formData.destinationLocation,
       numberOfPassengers: parseInt(formData.numberOfPassengers),

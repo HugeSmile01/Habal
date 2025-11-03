@@ -1,11 +1,11 @@
 # Habal - Local Ride-Hailing Platform
 
-A local-based ride-hailing platform that connects citizens who need rides with drivers. Built with React and Firebase.
+A local-based ride-hailing platform that connects passengers who need rides with drivers. Built with React and Firebase.
 
 ## Features
 
-### For Citizens (Passengers)
-- **User Registration**: Register as a citizen/passenger with email authentication
+### For Passengers
+- **User Registration**: Register as a passenger with email authentication
 - **Ride Requests**: Request rides by specifying pickup and destination locations
 - **Real-time Tracking**: Track your ride status and driver location
 - **Passenger Count**: Specify the number of passengers for the ride
@@ -82,7 +82,7 @@ A local-based ride-hailing platform that connects citizens who need rides with d
             allow read: if request.auth != null;
             allow create: if request.auth != null;
             allow update: if request.auth != null && 
-              (resource.data.citizenId == request.auth.uid || 
+              (resource.data.passengerId == request.auth.uid || 
                resource.data.driverId == request.auth.uid);
           }
         }
@@ -118,11 +118,11 @@ A local-based ride-hailing platform that connects citizens who need rides with d
 
 ## Usage
 
-### For Citizens (Passengers)
+### For Passengers
 
 1. **Register**
    - Click on "Register here"
-   - Select "Citizen (Need a ride)"
+   - Select "Passenger (Need a ride)"
    - Fill in your personal information
    - Submit the form
 
@@ -186,8 +186,8 @@ Habal/
 │   ├── pages/
 │   │   ├── AuthPage.jsx          # Authentication page
 │   │   ├── AuthPage.css          # Auth page styles
-│   │   ├── CitizenPage.jsx       # Citizen dashboard
-│   │   ├── CitizenPage.css       # Citizen dashboard styles
+│   │   ├── PassengerPage.jsx     # Passenger dashboard
+│   │   ├── PassengerPage.css     # Passenger dashboard styles
 │   │   ├── DriverPage.jsx        # Driver page
 │   │   └── DriverPage.css        # Driver page styles
 │   ├── services/
@@ -227,7 +227,7 @@ When a driver has active rides, the application automatically:
 - Each user has a unique Firebase UID
 - All rides are tracked with unique IDs
 - Timestamps for all actions
-- User type verification (citizen vs driver)
+- User type verification (passenger vs driver)
 - Secure authentication with Firebase
 
 ## Database Schema
@@ -237,7 +237,7 @@ When a driver has active rides, the application automatically:
 {
   uid: string,              // Firebase Auth UID
   email: string,
-  userType: string,         // 'citizen' or 'driver'
+  userType: string,         // 'passenger' or 'driver'
   fullName: string,
   phoneNumber: string,
   createdAt: timestamp,
@@ -252,7 +252,7 @@ When a driver has active rides, the application automatically:
   licenseNumber: string,
   isAvailable: boolean,
   
-  // Citizen-specific fields
+  // Passenger-specific fields
   homeAddress: string
 }
 ```
@@ -260,9 +260,9 @@ When a driver has active rides, the application automatically:
 ### Rides Collection
 ```javascript
 {
-  citizenId: string,
-  citizenName: string,
-  citizenPhone: string,
+  passengerId: string,
+  passengerName: string,
+  passengerPhone: string,
   pickupLocation: {
     lat: number,
     lng: number,

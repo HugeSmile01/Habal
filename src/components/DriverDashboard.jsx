@@ -78,7 +78,7 @@ const DriverDashboard = ({ user }) => {
           {availableRides.map((ride) => (
             <div key={ride.id} className="ride-card">
               <div className="ride-header">
-                <h3>{ride.citizenName}</h3>
+                <h3>{ride.passengerName}</h3>
                 <span className="badge">{ride.numberOfPassengers} passenger{ride.numberOfPassengers > 1 ? 's' : ''}</span>
               </div>
               

@@ -69,9 +69,9 @@ export const createRideRequest = async (rideData) => {
     const estimatedFee = calculateFee(distance);
 
     const ride = {
-      citizenId: rideData.citizenId,
-      citizenName: rideData.citizenName,
-      citizenPhone: rideData.citizenPhone,
+      passengerId: rideData.passengerId,
+      passengerName: rideData.passengerName,
+      passengerPhone: rideData.passengerPhone,
       pickupLocation: rideData.pickupLocation,
       destinationLocation: rideData.destinationLocation,
       numberOfPassengers: rideData.numberOfPassengers,
@@ -190,11 +190,11 @@ export const getAvailableRides = async () => {
 };
 
 /**
- * Get user's rides (citizen or driver)
+ * Get user's rides (passenger or driver)
  */
 export const getUserRides = async (userId, userType) => {
   try {
-    const field = userType === 'driver' ? 'driverId' : 'citizenId';
+    const field = userType === 'driver' ? 'driverId' : 'passengerId';
     const q = query(
       collection(db, 'rides'),
       where(field, '==', userId),

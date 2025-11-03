@@ -12,13 +12,13 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }) => {
     confirmPassword: '',
     fullName: '',
     phoneNumber: '',
-    userType: USER_TYPES.CITIZEN,
+    userType: USER_TYPES.PASSENGER,
     // Driver-specific fields
     vehicleType: '',
     vehicleModel: '',
     licensePlate: '',
     licenseNumber: '',
-    // Citizen-specific fields
+    // Passenger-specific fields
     homeAddress: ''
   });
 
@@ -123,7 +123,7 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }) => {
             onChange={handleChange}
             required
           >
-            <option value={USER_TYPES.CITIZEN}>Citizen (Need a ride)</option>
+            <option value={USER_TYPES.PASSENGER}>Passenger (Need a ride)</option>
             <option value={USER_TYPES.DRIVER}>Driver (Provide rides)</option>
           </select>
         </div>
@@ -237,7 +237,7 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }) => {
           </>
         )}
 
-        {formData.userType === USER_TYPES.CITIZEN && (
+        {formData.userType === USER_TYPES.PASSENGER && (
           <div className="form-group">
             <label>Home Address (Optional):</label>
             <input

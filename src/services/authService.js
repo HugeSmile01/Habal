@@ -9,12 +9,12 @@ import { auth, db } from '../config/firebase';
 
 // User types
 export const USER_TYPES = {
-  CITIZEN: 'citizen',
+  PASSENGER: 'passenger',
   DRIVER: 'driver'
 };
 
 /**
- * Register a new user (Citizen or Driver)
+ * Register a new user (Passenger or Driver)
  */
 export const registerUser = async (email, password, userData) => {
   try {
@@ -45,8 +45,8 @@ export const registerUser = async (email, password, userData) => {
         rating: 0,
         totalRides: 0
       }),
-      // Citizen-specific fields
-      ...(userData.userType === USER_TYPES.CITIZEN && {
+      // Passenger-specific fields
+      ...(userData.userType === USER_TYPES.PASSENGER && {
         homeAddress: userData.homeAddress || '',
         rating: 0,
         totalRides: 0
