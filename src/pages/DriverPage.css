@@ -324,3 +324,72 @@
     font-size: 12px;
   }
 }
+
+@media (max-width: 768px) {
+  .page-content {
+    padding: 0 15px 25px;
+  }
+
+  .tabs {
+    flex-direction: column;
+  }
+
+  .tab {
+    border-radius: 8px;
+    margin-bottom: 5px;
+  }
+
+  .tab.active {
+    border-radius: 8px;
+  }
+
+  .my-rides h2 {
+    font-size: 22px;
+  }
+
+  .rides-section {
+    margin-bottom: 25px;
+  }
+
+  .header-actions {
+    flex-direction: row;
+    gap: 8px;
+  }
+
+  .about-link-btn,
+  .logout-btn {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-content {
+    padding: 0 10px 20px;
+  }
+
+  .tabs {
+    margin-bottom: 15px;
+  }
+
+  .tab {
+    font-size: 14px;
+    padding: 10px 15px;
+  }
+
+  .my-rides h2 {
+    font-size: 20px;
+  }
+
+  .rides-section h2 {
+    font-size: 18px;
+  }
+
+  .no-rides {
+    padding: 30px 15px;
+  }
+
+  .no-rides p {
+    font-size: 14px;
+  }
+}

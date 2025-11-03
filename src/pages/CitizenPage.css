@@ -279,3 +279,89 @@
     font-size: 12px;
   }
 }
+
+@media (max-width: 768px) {
+  .page-content {
+    padding: 20px 15px;
+  }
+
+  .action-section {
+    margin-bottom: 25px;
+  }
+
+  .request-ride-btn {
+    font-size: 16px;
+    padding: 14px 24px;
+  }
+
+  .rides-history h2 {
+    font-size: 22px;
+  }
+
+  .ride-card {
+    padding: 18px;
+  }
+
+  .header-actions {
+    flex-direction: row;
+    gap: 8px;
+  }
+
+  .about-link-btn,
+  .logout-btn {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-content {
+    padding: 15px 10px;
+  }
+
+  .request-ride-btn {
+    font-size: 15px;
+    padding: 12px 20px;
+  }
+
+  .rides-history h2 {
+    font-size: 20px;
+  }
+
+  .ride-card {
+    padding: 15px;
+  }
+
+  .ride-card-header {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .status-badge {
+    font-size: 11px;
+  }
+
+  .ride-date {
+    font-size: 12px;
+  }
+
+  .info-row {
+    font-size: 14px;
+  }
+
+  .info-row .label {
+    min-width: 80px;
+    font-size: 13px;
+  }
+
+  .fee-amount {
+    font-size: 15px;
+  }
+
+  .back-btn {
+    font-size: 14px;
+    padding: 10px 18px;
+    margin-bottom: 15px;
+  }
+}
