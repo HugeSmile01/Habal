@@ -117,3 +117,61 @@
   margin-bottom: 20px;
   text-align: center;
 }
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .ride-request-form {
+    margin: 20px;
+    padding: 20px;
+  }
+
+  .ride-request-form h2 {
+    font-size: 22px;
+  }
+
+  .location-section {
+    padding: 15px;
+  }
+
+  .location-section h3 {
+    font-size: 16px;
+  }
+
+  .coordinates-group {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .ride-request-form {
+    margin: 10px;
+    padding: 15px;
+  }
+
+  .ride-request-form h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+
+  .location-section {
+    padding: 12px;
+    margin-bottom: 20px;
+  }
+
+  .form-group label {
+    font-size: 13px;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  .submit-btn {
+    padding: 10px;
+    font-size: 15px;
+  }
+}
+
