@@ -1,0 +1,271 @@
+.driver-page {
+  min-height: 100vh;
+  background: #f5f5f5;
+}
+
+.page-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 20px 0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.page-header h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.logout-btn {
+  padding: 10px 20px;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 2px solid white;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.logout-btn:hover {
+  background-color: white;
+  color: #667eea;
+}
+
+.page-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px 30px;
+}
+
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin: 30px 0 20px;
+}
+
+.tab {
+  flex: 1;
+  padding: 15px;
+  background: white;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  color: #666;
+  transition: all 0.3s;
+}
+
+.tab:hover {
+  border-color: #667eea;
+  color: #667eea;
+}
+
+.tab.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-color: #667eea;
+}
+
+.my-rides {
+  background: white;
+  border-radius: 10px;
+  padding: 30px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.rides-section {
+  margin-bottom: 40px;
+}
+
+.rides-section:last-child {
+  margin-bottom: 0;
+}
+
+.rides-section h2 {
+  color: #333;
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 22px;
+}
+
+.rides-list {
+  display: grid;
+  gap: 20px;
+}
+
+.ride-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 20px;
+  background: #fafafa;
+  transition: all 0.2s;
+}
+
+.ride-card.active-ride {
+  border: 2px solid #4CAF50;
+  background: #f1f8f4;
+}
+
+.ride-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.ride-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.status-badge {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-requested {
+  background-color: #FFF3E0;
+  color: #F57C00;
+}
+
+.status-accepted {
+  background-color: #E3F2FD;
+  color: #1976D2;
+}
+
+.status-arriving {
+  background-color: #F3E5F5;
+  color: #7B1FA2;
+}
+
+.status-progress {
+  background-color: #E8F5E9;
+  color: #388E3C;
+}
+
+.status-completed {
+  background-color: #E0F2F1;
+  color: #00796B;
+}
+
+.status-cancelled {
+  background-color: #FFEBEE;
+  color: #C62828;
+}
+
+.passenger-count {
+  background-color: #2196F3;
+  color: white;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.ride-date {
+  font-size: 13px;
+  color: #666;
+}
+
+.ride-info {
+  display: grid;
+  gap: 10px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.info-row .label {
+  font-weight: 600;
+  color: #555;
+  min-width: 140px;
+}
+
+.info-row span:last-child {
+  color: #333;
+  text-align: right;
+  flex: 1;
+}
+
+.coords {
+  font-family: monospace;
+  font-size: 12px;
+}
+
+.fee-amount {
+  color: #4CAF50;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.tracking-info {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 2px solid #e0e0e0;
+  text-align: center;
+}
+
+.tracking-indicator {
+  display: inline-block;
+  background-color: #4CAF50;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.no-rides {
+  text-align: center;
+  padding: 60px 20px;
+  color: #666;
+}
+
+.no-rides p {
+  margin: 10px 0;
+  font-size: 16px;
+}
+
+@media (max-width: 768px) {
+  .header-content {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .page-header h1 {
+    font-size: 22px;
+  }
+
+  .tabs {
+    flex-direction: column;
+  }
+
+  .info-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+
+  .info-row span:last-child {
+    text-align: left;
+  }
+}
