@@ -1,0 +1,61 @@
+{
+  "compilerOptions": {
+    /* Language and Environment */
+    "target": "ES2020",                        // Modern JavaScript features
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],  // Include DOM types for browser APIs
+    "jsx": "react-jsx",                        // React 17+ JSX transform
+    
+    /* Modules */
+    "module": "ESNext",                        // Use ESM modules
+    "moduleResolution": "bundler",             // Vite/bundler resolution
+    "resolveJsonModule": true,                 // Allow importing JSON files
+    "allowImportingTsExtensions": true,        // Allow .ts/.tsx imports in bundler mode
+    
+    /* Type Checking - STRICT MODE */
+    "strict": true,                            // Enable all strict type-checking options
+    "noUnusedLocals": true,                    // Error on unused local variables
+    "noUnusedParameters": true,                // Error on unused parameters
+    "noFallthroughCasesInSwitch": true,       // Error on switch fallthrough
+    "noImplicitReturns": true,                // Error when not all code paths return
+    "noUncheckedIndexedAccess": true,         // Add undefined to index signatures
+    "exactOptionalPropertyTypes": true,        // Strict optional properties
+    "noImplicitOverride": true,               // Require override keyword
+    "allowUnusedLabels": false,               // Error on unused labels
+    "allowUnreachableCode": false,            // Error on unreachable code
+    
+    /* Emit */
+    "noEmit": true,                           // Vite handles compilation
+    "isolatedModules": true,                  // Required for Vite
+    "skipLibCheck": true,                     // Skip type checking of .d.ts files
+    
+    /* Interop Constraints */
+    "esModuleInterop": true,                  // Better CommonJS interop
+    "allowSyntheticDefaultImports": true,     // Allow default imports
+    "forceConsistentCasingInFileNames": true, // Ensure case consistency
+    
+    /* Security & Best Practices */
+    "useDefineForClassFields": true,          // Proper class field behavior
+    "paths": {
+      "@/*": ["./src/*"],                     // Path alias for cleaner imports
+      "@config/*": ["./src/config/*"],
+      "@services/*": ["./src/services/*"],
+      "@components/*": ["./src/components/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@types/*": ["./src/types/*"],
+      "@hooks/*": ["./src/hooks/*"],
+      "@store/*": ["./src/store/*"]
+    }
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    "**/*.spec.ts",
+    "**/*.test.ts"
+  ]
+}
