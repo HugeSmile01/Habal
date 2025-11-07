@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import './ActiveRideCard.css';
 
 const ActiveRideCard = ({ route, status, expectedTime, location }) => {
@@ -27,6 +28,13 @@ const ActiveRideCard = ({ route, status, expectedTime, location }) => {
       </div>
     </div>
   );
+};
+
+ActiveRideCard.propTypes = {
+  route: PropTypes.string.isRequired,
+  status: PropTypes.string.isRequired,
+  expectedTime: PropTypes.string.isRequired,
+  location: PropTypes.string.isRequired
 };
 
 export default ActiveRideCard;

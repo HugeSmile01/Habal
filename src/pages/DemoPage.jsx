@@ -30,13 +30,13 @@ const DemoPage = () => {
           <ActiveRideCard 
             route="Hingatungan To Silago"
             status="Ongoing"
-            expectedTime="10minutes"
+            expectedTime="10 minutes"
             location="Silago, Southern Leyte"
           />
           <ActiveRideCard 
             route="Laguma To Silago"
             status="Ongoing"
-            expectedTime="5minutes"
+            expectedTime="5 minutes"
             location="Silago, Southern Leyte"
           />
         </div>

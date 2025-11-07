@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import './BottomNavigation.css';
 
 const BottomNavigation = ({ activeItem = 'home', onNavigate }) => {
@@ -70,6 +71,16 @@ const BottomNavigation = ({ activeItem = 'home', onNavigate }) => {
       </div>
     </nav>
   );
+};
+
+BottomNavigation.propTypes = {
+  activeItem: PropTypes.oneOf(['home', 'map', 'request-ride', 'notifications', 'profile']),
+  onNavigate: PropTypes.func
+};
+
+BottomNavigation.defaultProps = {
+  activeItem: 'home',
+  onNavigate: () => {}
 };
 
 export default BottomNavigation;

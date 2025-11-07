@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import './Header.css';
 
 const Header = ({ onMenuClick }) => {
@@ -30,6 +31,14 @@ const Header = ({ onMenuClick }) => {
       </div>
     </header>
   );
+};
+
+Header.propTypes = {
+  onMenuClick: PropTypes.func
+};
+
+Header.defaultProps = {
+  onMenuClick: () => {}
 };
 
 export default Header;
