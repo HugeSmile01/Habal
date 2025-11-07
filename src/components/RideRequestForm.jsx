@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { createRideRequest } from '../services/rideService';
 import { getUserLocation } from '../utils/helpers';
 import { geocodeAddress, reverseGeocode, autocompleteAddress } from '../services/radarService';
@@ -126,6 +126,19 @@ const RideRequestForm = ({ user, onSuccess }) => {
     setDestinationSuggestions([]);
   };
 
+  // Memoized focus handlers to prevent re-renders
+  const handlePickupFocus = useCallback(() => {
+    if (pickupSuggestions.length > 0) {
+      setShowPickupSuggestions(true);
+    }
+  }, [pickupSuggestions.length]);
+
+  const handleDestinationFocus = useCallback(() => {
+    if (destinationSuggestions.length > 0) {
+      setShowDestinationSuggestions(true);
+    }
+  }, [destinationSuggestions.length]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -189,7 +202,7 @@ const RideRequestForm = ({ user, onSuccess }) => {
                 type="text"
                 value={formData.pickupLocation.address}
                 onChange={(e) => handlePickupAddressChange(e.target.value)}
-                onFocus={() => pickupSuggestions.length > 0 && setShowPickupSuggestions(true)}
+                onFocus={handlePickupFocus}
                 placeholder="Enter pickup address or search"
                 required
               />
@@ -245,7 +258,7 @@ const RideRequestForm = ({ user, onSuccess }) => {
                 type="text"
                 value={formData.destinationLocation.address}
                 onChange={(e) => handleDestinationAddressChange(e.target.value)}
-                onFocus={() => destinationSuggestions.length > 0 && setShowDestinationSuggestions(true)}
+                onFocus={handleDestinationFocus}
                 placeholder="Enter destination address or search"
                 required
               />

@@ -37,7 +37,7 @@ export const validateEnvironment = () => {
   // Check optional variables (just warnings)
   optionalEnvVars.forEach(varName => {
     const value = import.meta.env[varName];
-    if (!value || value.startsWith('your_')) {
+    if (!value || value.startsWith('YOUR_') || value.startsWith('your_')) {
       warnings.push(varName);
     }
   });
