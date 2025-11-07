@@ -6,6 +6,7 @@ import {
   calculateFee 
 } from '../services/rideService';
 import { formatDistance, formatCurrency } from '../utils/helpers';
+import { showSuccess, showError, showConfirm, showLoading, closeLoading } from '../utils/sweetAlert';
 import './DriverDashboard.css';
 
 const DriverDashboard = ({ user }) => {
@@ -35,11 +36,21 @@ const DriverDashboard = ({ user }) => {
     const proposedFee = proposedFees[ride.id] || ride.estimatedFee;
     
     if (!proposedFee || proposedFee <= 0) {
-      alert('Please enter a valid fee');
+      showError('Please enter a valid fee amount greater than zero.', 'Invalid Fee');
+      return;
+    }
+
+    const result = await showConfirm(
+      `Accept this ride for ${formatCurrency(proposedFee)}? The passenger will be notified immediately.`,
+      'Confirm Ride Acceptance'
+    );
+
+    if (!result.isConfirmed) {
       return;
     }
 
     setAcceptingRide(ride.id);
+    showLoading('Accepting Ride...', 'Please wait while we process your acceptance');
 
     const driverData = {
       driverId: user.uid,
@@ -49,12 +60,17 @@ const DriverDashboard = ({ user }) => {
       proposedFee: parseFloat(proposedFee)
     };
 
-    const result = await acceptRideRequest(ride.id, driverData);
+    const acceptResult = await acceptRideRequest(ride.id, driverData);
 
-    if (result.success) {
-      alert('Ride accepted! Passenger will be notified.');
+    closeLoading();
+
+    if (acceptResult.success) {
+      await showSuccess(
+        `You have successfully accepted the ride! The passenger ${ride.passengerName} has been notified.`,
+        'Ride Accepted!'
+      );
     } else {
-      alert(`Error accepting ride: ${result.error}`);
+      showError(acceptResult.error || 'Failed to accept the ride. Please try again.', 'Error');
     }
 
     setAcceptingRide(null);

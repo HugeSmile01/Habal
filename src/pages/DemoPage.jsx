@@ -42,7 +42,7 @@ const DemoPage = () => {
         </div>
 
         {/* Hero Image Section */}
-        <HeroImage src="/placeholder-vehicle.svg" alt="Habal ride vehicle" />
+        <HeroImage src="/motorcycle.png" alt="Habal ride vehicle" />
 
         {/* Demo Content */}
         <div className="demo-content">

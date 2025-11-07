@@ -9,7 +9,8 @@ import {
   where,
   orderBy,
   onSnapshot,
-  serverTimestamp
+  serverTimestamp,
+  deleteDoc
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
 
@@ -262,4 +263,85 @@ export const subscribeToAvailableRides = (callback) => {
     });
     callback(rides);
   });
+};
+
+/**
+ * Soft delete a ride - move it to history collection instead of deleting permanently
+ * This preserves data for record-keeping and analytics
+ */
+export const softDeleteRide = async (rideId) => {
+  try {
+    // Get the ride data first
+    const rideDoc = await getDoc(doc(db, 'rides', rideId));
+    
+    if (!rideDoc.exists()) {
+      return { success: false, error: 'Ride not found' };
+    }
+
+    const rideData = { id: rideDoc.id, ...rideDoc.data() };
+
+    // Add to history collection with deleted metadata
+    await addDoc(collection(db, 'rides_history'), {
+      ...rideData,
+      deletedAt: serverTimestamp(),
+      originalId: rideId
+    });
+
+    // Delete from active rides collection
+    await deleteDoc(doc(db, 'rides', rideId));
+
+    return { success: true };
+  } catch (error) {
+    console.error('Soft delete ride error:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+/**
+ * Get ride history for a user
+ */
+export const getRideHistory = async (userId, userType) => {
+  try {
+    const field = userType === 'driver' ? 'driverId' : 'passengerId';
+    const q = query(
+      collection(db, 'rides_history'),
+      where(field, '==', userId),
+      orderBy('deletedAt', 'desc')
+    );
+
+    const querySnapshot = await getDocs(q);
+    const rides = [];
+    
+    querySnapshot.forEach((doc) => {
+      rides.push({ id: doc.id, ...doc.data() });
+    });
+
+    return { success: true, rides };
+  } catch (error) {
+    console.error('Get ride history error:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+/**
+ * Cancel a ride (soft delete with cancellation reason)
+ */
+export const cancelRide = async (rideId, cancelledBy, reason = '') => {
+  try {
+    // Update ride status to cancelled
+    await updateRideStatus(rideId, RIDE_STATUS.CANCELLED, {
+      cancelledBy,
+      cancellationReason: reason,
+      cancelledAt: serverTimestamp()
+    });
+
+    // Move to history after a delay (optional - can be done by a scheduled function)
+    // For now, we just mark as cancelled but keep it in active collection
+    // The soft delete can be triggered manually or by a cleanup job
+
+    return { success: true };
+  } catch (error) {
+    console.error('Cancel ride error:', error);
+    return { success: false, error: error.message };
+  }
 };

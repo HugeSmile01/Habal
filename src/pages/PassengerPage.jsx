@@ -29,7 +29,6 @@ const PassengerPage = ({ user, onLogout }) => {
   };
 
   const handleRideSuccess = (result) => {
-    alert(`Ride requested successfully!\nDistance: ${formatDistance(result.distance)}\nEstimated Fee: ${formatCurrency(result.estimatedFee)}`);
     setShowRequestForm(false);
     loadRides();
   };
@@ -103,7 +102,7 @@ const PassengerPage = ({ user, onLogout }) => {
             </div>
 
             {/* Hero Image Section */}
-            <HeroImage src="/placeholder-vehicle.svg" alt="Habal ride vehicle" />
+            <HeroImage src="/motorcycle.png" alt="Habal ride vehicle" />
 
             {/* User's Rides History */}
             <div className="rides-history">
