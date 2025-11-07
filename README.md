@@ -41,8 +41,21 @@ npm run build      # Build for production
 - React 19
 - Firebase (Auth, Firestore, Storage)
 - Vite
+- Radar.com API (Location services & Geocoding)
 - Geolocation API
 - Device Fingerprinting
+
+### Production Deployment
+
+For production deployment, ensure:
+1. All environment variables are set (see `.env.example`)
+2. Firebase project is configured with proper security rules
+3. Radar.com API key is obtained and configured
+4. HTTPS is enabled for all production domains
+5. Content Security Policy (CSP) headers are configured
+6. Rate limiting is enabled for API endpoints
+
+See [SETUP.md](SETUP.md) for detailed deployment instructions.
 
 ### Safety & Legal
 The platform implements strict safety and security measures including:
