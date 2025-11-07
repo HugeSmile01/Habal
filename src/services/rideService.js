@@ -9,7 +9,8 @@ import {
   where,
   orderBy,
   onSnapshot,
-  serverTimestamp
+  serverTimestamp,
+  deleteDoc
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
 
@@ -59,12 +60,57 @@ export const calculateFee = (distance, baseFare = DEFAULT_BASE_FARE, perKmRate =
  */
 export const createRideRequest = async (rideData) => {
   try {
+    // Validate input data
+    if (!rideData.passengerId || !rideData.passengerName || !rideData.passengerPhone) {
+      return { 
+        success: false, 
+        error: 'Missing required passenger information' 
+      };
+    }
+
+    if (!rideData.pickupLocation?.lat || !rideData.pickupLocation?.lng) {
+      return { 
+        success: false, 
+        error: 'Invalid pickup location' 
+      };
+    }
+
+    if (!rideData.destinationLocation?.lat || !rideData.destinationLocation?.lng) {
+      return { 
+        success: false, 
+        error: 'Invalid destination location' 
+      };
+    }
+
+    if (!rideData.numberOfPassengers || rideData.numberOfPassengers < 1) {
+      return { 
+        success: false, 
+        error: 'Invalid number of passengers' 
+      };
+    }
+
     const distance = calculateDistance(
       rideData.pickupLocation.lat,
       rideData.pickupLocation.lng,
       rideData.destinationLocation.lat,
       rideData.destinationLocation.lng
     );
+
+    // Validate distance
+    if (distance <= 0 || !isFinite(distance)) {
+      return { 
+        success: false, 
+        error: 'Invalid distance calculated. Please check your locations.' 
+      };
+    }
+
+    // Check if distance is too short (less than 100 meters)
+    if (distance < 0.1) {
+      return { 
+        success: false, 
+        error: 'Pickup and destination are too close. Minimum distance is 100 meters.' 
+      };
+    }
 
     const estimatedFee = calculateFee(distance);
 
@@ -96,7 +142,19 @@ export const createRideRequest = async (rideData) => {
     };
   } catch (error) {
     console.error('Create ride request error:', error);
-    return { success: false, error: error.message };
+    
+    // Provide user-friendly error messages
+    let errorMessage = 'Failed to create ride request. Please try again.';
+    
+    if (error.code === 'permission-denied') {
+      errorMessage = 'You do not have permission to create a ride request. Please check your account.';
+    } else if (error.code === 'unavailable') {
+      errorMessage = 'Service temporarily unavailable. Please check your internet connection.';
+    } else if (error.message) {
+      errorMessage = error.message;
+    }
+    
+    return { success: false, error: errorMessage };
   }
 };
 
@@ -105,7 +163,35 @@ export const createRideRequest = async (rideData) => {
  */
 export const acceptRideRequest = async (rideId, driverData) => {
   try {
+    // Validate input
+    if (!rideId) {
+      return { success: false, error: 'Invalid ride ID' };
+    }
+
+    if (!driverData.driverId || !driverData.driverName || !driverData.driverPhone) {
+      return { success: false, error: 'Missing required driver information' };
+    }
+
+    if (!driverData.proposedFee || driverData.proposedFee <= 0) {
+      return { success: false, error: 'Invalid fee amount' };
+    }
+
+    // Check if ride exists and is still available
     const rideRef = doc(db, 'rides', rideId);
+    const rideDoc = await getDoc(rideRef);
+    
+    if (!rideDoc.exists()) {
+      return { success: false, error: 'Ride not found' };
+    }
+
+    const rideData = rideDoc.data();
+    
+    if (rideData.status !== RIDE_STATUS.REQUESTED) {
+      return { 
+        success: false, 
+        error: 'This ride has already been accepted by another driver' 
+      };
+    }
     
     await updateDoc(rideRef, {
       driverId: driverData.driverId,
@@ -121,7 +207,20 @@ export const acceptRideRequest = async (rideId, driverData) => {
     return { success: true };
   } catch (error) {
     console.error('Accept ride error:', error);
-    return { success: false, error: error.message };
+    
+    let errorMessage = 'Failed to accept ride. Please try again.';
+    
+    if (error.code === 'permission-denied') {
+      errorMessage = 'You do not have permission to accept this ride.';
+    } else if (error.code === 'unavailable') {
+      errorMessage = 'Service temporarily unavailable. Please check your internet connection.';
+    } else if (error.code === 'not-found') {
+      errorMessage = 'This ride no longer exists.';
+    } else if (error.message) {
+      errorMessage = error.message;
+    }
+    
+    return { success: false, error: errorMessage };
   }
 };
 
@@ -262,4 +361,85 @@ export const subscribeToAvailableRides = (callback) => {
     });
     callback(rides);
   });
+};
+
+/**
+ * Soft delete a ride - move it to history collection instead of deleting permanently
+ * This preserves data for record-keeping and analytics
+ */
+export const softDeleteRide = async (rideId) => {
+  try {
+    // Get the ride data first
+    const rideDoc = await getDoc(doc(db, 'rides', rideId));
+    
+    if (!rideDoc.exists()) {
+      return { success: false, error: 'Ride not found' };
+    }
+
+    const rideData = { id: rideDoc.id, ...rideDoc.data() };
+
+    // Add to history collection with deleted metadata
+    await addDoc(collection(db, 'rides_history'), {
+      ...rideData,
+      deletedAt: serverTimestamp(),
+      originalId: rideId
+    });
+
+    // Delete from active rides collection
+    await deleteDoc(doc(db, 'rides', rideId));
+
+    return { success: true };
+  } catch (error) {
+    console.error('Soft delete ride error:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+/**
+ * Get ride history for a user
+ */
+export const getRideHistory = async (userId, userType) => {
+  try {
+    const field = userType === 'driver' ? 'driverId' : 'passengerId';
+    const q = query(
+      collection(db, 'rides_history'),
+      where(field, '==', userId),
+      orderBy('deletedAt', 'desc')
+    );
+
+    const querySnapshot = await getDocs(q);
+    const rides = [];
+    
+    querySnapshot.forEach((doc) => {
+      rides.push({ id: doc.id, ...doc.data() });
+    });
+
+    return { success: true, rides };
+  } catch (error) {
+    console.error('Get ride history error:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+/**
+ * Cancel a ride (soft delete with cancellation reason)
+ */
+export const cancelRide = async (rideId, cancelledBy, reason = '') => {
+  try {
+    // Update ride status to cancelled
+    await updateRideStatus(rideId, RIDE_STATUS.CANCELLED, {
+      cancelledBy,
+      cancellationReason: reason,
+      cancelledAt: serverTimestamp()
+    });
+
+    // Move to history after a delay (optional - can be done by a scheduled function)
+    // For now, we just mark as cancelled but keep it in active collection
+    // The soft delete can be triggered manually or by a cleanup job
+
+    return { success: true };
+  } catch (error) {
+    console.error('Cancel ride error:', error);
+    return { success: false, error: error.message };
+  }
 };

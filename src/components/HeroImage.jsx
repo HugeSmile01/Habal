@@ -6,7 +6,7 @@ const HeroImage = ({ src, alt }) => {
   return (
     <div className="hero-section">
       <img 
-        src={src || '/placeholder-vehicle.svg'} 
+        src={src || '/motorcycle.png'} 
         alt={alt || 'Habal ride vehicle'}
         className="hero-image"
       />
@@ -20,7 +20,7 @@ HeroImage.propTypes = {
 };
 
 HeroImage.defaultProps = {
-  src: '/placeholder-vehicle.svg',
+  src: '/motorcycle.png',
   alt: 'Habal ride vehicle'
 };
 

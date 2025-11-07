@@ -2,6 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { createRideRequest } from '../services/rideService';
 import { getUserLocation } from '../utils/helpers';
 import { geocodeAddress, reverseGeocode, autocompleteAddress } from '../services/radarService';
+import { SILAGO_BARANGAYS, getBarangayByValue } from '../constants/locations';
+import { showRideRequestSuccess, showError, showLoading, closeLoading } from '../utils/sweetAlert';
 import './RideRequestForm.css';
 
 const RideRequestForm = ({ user, onSuccess }) => {
@@ -15,6 +17,8 @@ const RideRequestForm = ({ user, onSuccess }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [gettingLocation, setGettingLocation] = useState(false);
+  const [pickupMethod, setPickupMethod] = useState('current'); // 'current', 'barangay', 'search'
+  const [destinationMethod, setDestinationMethod] = useState('barangay'); // 'barangay', 'search'
   const [pickupSuggestions, setPickupSuggestions] = useState([]);
   const [destinationSuggestions, setDestinationSuggestions] = useState([]);
   const [showPickupSuggestions, setShowPickupSuggestions] = useState(false);
@@ -60,14 +64,46 @@ const RideRequestForm = ({ user, onSuccess }) => {
         pickupLocation: {
           lat: location.lat,
           lng: location.lng,
-          address: addressResult.success ? addressResult.address.formatted : ''
+          address: addressResult.success ? addressResult.address.formatted : 'Current Location'
         }
       }));
+      setPickupMethod('current');
     } catch (err) {
+      showError('Could not get your location. Please try another method.', 'Location Error');
       setError('Could not get your location. Please enter manually.');
     }
     
     setGettingLocation(false);
+  };
+
+  // Handle barangay selection for pickup
+  const handlePickupBarangayChange = (value) => {
+    const barangay = getBarangayByValue(value);
+    if (barangay) {
+      setFormData(prev => ({
+        ...prev,
+        pickupLocation: {
+          lat: barangay.lat,
+          lng: barangay.lng,
+          address: barangay.name + ', Silago, Southern Leyte'
+        }
+      }));
+    }
+  };
+
+  // Handle barangay selection for destination
+  const handleDestinationBarangayChange = (value) => {
+    const barangay = getBarangayByValue(value);
+    if (barangay) {
+      setFormData(prev => ({
+        ...prev,
+        destinationLocation: {
+          lat: barangay.lat,
+          lng: barangay.lng,
+          address: barangay.name + ', Silago, Southern Leyte'
+        }
+      }));
+    }
   };
 
   // Handle address autocomplete for pickup with debouncing
@@ -175,16 +211,23 @@ const RideRequestForm = ({ user, onSuccess }) => {
 
     // Validation
     if (!formData.pickupLocation.lat || !formData.pickupLocation.lng) {
-      setError('Please provide pickup location coordinates');
+      showError('Please select a valid pickup location', 'Validation Error');
       return;
     }
 
     if (!formData.destinationLocation.lat || !formData.destinationLocation.lng) {
-      setError('Please provide destination location coordinates');
+      showError('Please select a valid destination location', 'Validation Error');
+      return;
+    }
+
+    if (formData.pickupLocation.lat === formData.destinationLocation.lat && 
+        formData.pickupLocation.lng === formData.destinationLocation.lng) {
+      showError('Pickup and destination locations cannot be the same', 'Validation Error');
       return;
     }
 
     setLoading(true);
+    showLoading('Requesting Ride...', 'Please wait while we process your request');
 
     const rideData = {
       passengerId: user.uid,
@@ -196,12 +239,26 @@ const RideRequestForm = ({ user, onSuccess }) => {
       notes: formData.notes
     };
 
-    const result = await createRideRequest(rideData);
+    try {
+      const result = await createRideRequest(rideData);
 
-    if (result.success) {
-      onSuccess(result);
-    } else {
-      setError(result.error);
+      closeLoading();
+
+      if (result.success) {
+        const { formatDistance, formatCurrency } = await import('../utils/helpers');
+        await showRideRequestSuccess(
+          formatDistance(result.distance),
+          formatCurrency(result.estimatedFee)
+        );
+        onSuccess(result);
+      } else {
+        showError(result.error || 'Failed to create ride request', 'Request Failed');
+        setError(result.error);
+      }
+    } catch (err) {
+      closeLoading();
+      showError('An unexpected error occurred. Please try again.', 'Error');
+      setError('An unexpected error occurred');
     }
 
     setLoading(false);
@@ -215,127 +272,190 @@ const RideRequestForm = ({ user, onSuccess }) => {
       
       <form onSubmit={handleSubmit}>
         <div className="location-section">
-          <h3>Pickup Location</h3>
-          <button 
-            type="button" 
-            onClick={getCurrentLocation}
-            disabled={gettingLocation}
-            className="location-btn"
-          >
-            {gettingLocation ? 'Getting Location...' : 'Use My Current Location'}
-          </button>
+          <h3>📍 Pickup Location</h3>
           
-          <div className="form-group">
-            <label>Pickup Address:</label>
-            <div className="autocomplete-wrapper">
-              <input
-                type="text"
-                value={formData.pickupLocation.address}
-                onChange={(e) => handlePickupAddressChange(e.target.value)}
-                onFocus={handlePickupFocus}
-                placeholder="Enter pickup address or search"
-                required
+          <div className="location-method-selector">
+            <label>
+              <input 
+                type="radio" 
+                name="pickupMethod" 
+                value="current"
+                checked={pickupMethod === 'current'}
+                onChange={(e) => setPickupMethod(e.target.value)}
               />
-              {showPickupSuggestions && pickupSuggestions.length > 0 && (
-                <ul className="autocomplete-suggestions">
-                  {pickupSuggestions.map((suggestion, index) => (
-                    <li 
-                      key={index}
-                      onClick={() => selectPickupSuggestion(suggestion)}
-                      className="suggestion-item"
-                    >
-                      <div className="suggestion-text">{suggestion.formattedAddress}</div>
-                      <div className="suggestion-meta">{suggestion.city}, {suggestion.state}</div>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
+              Use My Current Location
+            </label>
+            <label>
+              <input 
+                type="radio" 
+                name="pickupMethod" 
+                value="barangay"
+                checked={pickupMethod === 'barangay'}
+                onChange={(e) => setPickupMethod(e.target.value)}
+              />
+              Select Barangay
+            </label>
+            <label>
+              <input 
+                type="radio" 
+                name="pickupMethod" 
+                value="search"
+                checked={pickupMethod === 'search'}
+                onChange={(e) => setPickupMethod(e.target.value)}
+              />
+              Search Address
+            </label>
           </div>
 
-          <div className="coordinates-group">
+          {pickupMethod === 'current' && (
+            <button 
+              type="button" 
+              onClick={getCurrentLocation}
+              disabled={gettingLocation}
+              className="location-btn"
+            >
+              {gettingLocation ? '📍 Getting Location...' : '📍 Get My Current Location'}
+            </button>
+          )}
+
+          {pickupMethod === 'barangay' && (
             <div className="form-group">
-              <label>Latitude:</label>
-              <input
-                type="number"
-                step="any"
-                value={formData.pickupLocation.lat}
-                onChange={(e) => handleLocationChange('pickupLocation', 'lat', parseFloat(e.target.value))}
+              <label>Select Pickup Barangay:</label>
+              <select 
+                onChange={(e) => handlePickupBarangayChange(e.target.value)}
+                className="barangay-select"
                 required
-              />
+              >
+                <option value="">-- Select a Barangay --</option>
+                {SILAGO_BARANGAYS.map((barangay) => (
+                  <option key={barangay.value} value={barangay.value}>
+                    {barangay.name}
+                  </option>
+                ))}
+              </select>
             </div>
-            
+          )}
+
+          {pickupMethod === 'search' && (
             <div className="form-group">
-              <label>Longitude:</label>
-              <input
-                type="number"
-                step="any"
-                value={formData.pickupLocation.lng}
-                onChange={(e) => handleLocationChange('pickupLocation', 'lng', parseFloat(e.target.value))}
-                required
-              />
+              <label>Search Pickup Address:</label>
+              <div className="autocomplete-wrapper">
+                <input
+                  type="text"
+                  value={formData.pickupLocation.address}
+                  onChange={(e) => handlePickupAddressChange(e.target.value)}
+                  onFocus={handlePickupFocus}
+                  placeholder="Type to search address..."
+                  required
+                />
+                {showPickupSuggestions && pickupSuggestions.length > 0 && (
+                  <ul className="autocomplete-suggestions">
+                    {pickupSuggestions.map((suggestion, index) => (
+                      <li 
+                        key={index}
+                        onClick={() => selectPickupSuggestion(suggestion)}
+                        className="suggestion-item"
+                      >
+                        <div className="suggestion-text">{suggestion.formattedAddress}</div>
+                        <div className="suggestion-meta">{suggestion.city}, {suggestion.state}</div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             </div>
-          </div>
+          )}
+
+          {formData.pickupLocation.address && (
+            <div className="selected-location">
+              <strong>Selected:</strong> {formData.pickupLocation.address}
+            </div>
+          )}
         </div>
 
         <div className="location-section">
-          <h3>Destination</h3>
+          <h3>🎯 Destination</h3>
           
-          <div className="form-group">
-            <label>Destination Address:</label>
-            <div className="autocomplete-wrapper">
-              <input
-                type="text"
-                value={formData.destinationLocation.address}
-                onChange={(e) => handleDestinationAddressChange(e.target.value)}
-                onFocus={handleDestinationFocus}
-                placeholder="Enter destination address or search"
-                required
+          <div className="location-method-selector">
+            <label>
+              <input 
+                type="radio" 
+                name="destinationMethod" 
+                value="barangay"
+                checked={destinationMethod === 'barangay'}
+                onChange={(e) => setDestinationMethod(e.target.value)}
               />
-              {showDestinationSuggestions && destinationSuggestions.length > 0 && (
-                <ul className="autocomplete-suggestions">
-                  {destinationSuggestions.map((suggestion, index) => (
-                    <li 
-                      key={index}
-                      onClick={() => selectDestinationSuggestion(suggestion)}
-                      className="suggestion-item"
-                    >
-                      <div className="suggestion-text">{suggestion.formattedAddress}</div>
-                      <div className="suggestion-meta">{suggestion.city}, {suggestion.state}</div>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
+              Select Barangay
+            </label>
+            <label>
+              <input 
+                type="radio" 
+                name="destinationMethod" 
+                value="search"
+                checked={destinationMethod === 'search'}
+                onChange={(e) => setDestinationMethod(e.target.value)}
+              />
+              Search Address
+            </label>
           </div>
 
-          <div className="coordinates-group">
+          {destinationMethod === 'barangay' && (
             <div className="form-group">
-              <label>Latitude:</label>
-              <input
-                type="number"
-                step="any"
-                value={formData.destinationLocation.lat}
-                onChange={(e) => handleLocationChange('destinationLocation', 'lat', parseFloat(e.target.value))}
+              <label>Select Destination Barangay:</label>
+              <select 
+                onChange={(e) => handleDestinationBarangayChange(e.target.value)}
+                className="barangay-select"
                 required
-              />
+              >
+                <option value="">-- Select a Barangay --</option>
+                {SILAGO_BARANGAYS.map((barangay) => (
+                  <option key={barangay.value} value={barangay.value}>
+                    {barangay.name}
+                  </option>
+                ))}
+              </select>
             </div>
-            
+          )}
+
+          {destinationMethod === 'search' && (
             <div className="form-group">
-              <label>Longitude:</label>
-              <input
-                type="number"
-                step="any"
-                value={formData.destinationLocation.lng}
-                onChange={(e) => handleLocationChange('destinationLocation', 'lng', parseFloat(e.target.value))}
-                required
-              />
+              <label>Search Destination Address:</label>
+              <div className="autocomplete-wrapper">
+                <input
+                  type="text"
+                  value={formData.destinationLocation.address}
+                  onChange={(e) => handleDestinationAddressChange(e.target.value)}
+                  onFocus={handleDestinationFocus}
+                  placeholder="Type to search address..."
+                  required
+                />
+                {showDestinationSuggestions && destinationSuggestions.length > 0 && (
+                  <ul className="autocomplete-suggestions">
+                    {destinationSuggestions.map((suggestion, index) => (
+                      <li 
+                        key={index}
+                        onClick={() => selectDestinationSuggestion(suggestion)}
+                        className="suggestion-item"
+                      >
+                        <div className="suggestion-text">{suggestion.formattedAddress}</div>
+                        <div className="suggestion-meta">{suggestion.city}, {suggestion.state}</div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             </div>
-          </div>
+          )}
+
+          {formData.destinationLocation.address && (
+            <div className="selected-location">
+              <strong>Selected:</strong> {formData.destinationLocation.address}
+            </div>
+          )}
         </div>
 
         <div className="form-group">
-          <label>Number of Passengers:</label>
+          <label>👥 Number of Passengers:</label>
           <select 
             name="numberOfPassengers" 
             value={formData.numberOfPassengers}
@@ -351,7 +471,7 @@ const RideRequestForm = ({ user, onSuccess }) => {
         </div>
 
         <div className="form-group">
-          <label>Additional Notes (Optional):</label>
+          <label>📝 Additional Notes (Optional):</label>
           <textarea
             name="notes"
             value={formData.notes}
@@ -362,7 +482,7 @@ const RideRequestForm = ({ user, onSuccess }) => {
         </div>
 
         <button type="submit" disabled={loading} className="submit-btn">
-          {loading ? 'Requesting...' : 'Request Ride'}
+          {loading ? '⏳ Requesting...' : '🚀 Request Ride'}
         </button>
       </form>
     </div>
