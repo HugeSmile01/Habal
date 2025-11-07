@@ -1,0 +1,32 @@
+.hero-section {
+  width: 100%;
+  height: auto;
+  margin: 24px 0;
+}
+
+.hero-image {
+  width: 100%;
+  height: auto;
+  max-height: 60vh;
+  object-fit: cover;
+  object-position: center;
+  filter: brightness(0.95) contrast(1.05);
+  border-radius: 16px;
+}
+
+@media (max-width: 768px) {
+  .hero-section {
+    margin: 16px 0;
+  }
+
+  .hero-image {
+    max-height: 50vh;
+    border-radius: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-image {
+    max-height: 40vh;
+  }
+}

@@ -57,6 +57,14 @@ export default defineConfig({
   
   // Optimize dependencies
   optimizeDeps: {
-    include: ['react', 'react-dom', 'react-router-dom', 'firebase'],
+    include: [
+      'react', 
+      'react-dom', 
+      'react-router-dom', 
+      'firebase/app',
+      'firebase/auth',
+      'firebase/firestore',
+      'firebase/storage'
+    ],
   },
 });

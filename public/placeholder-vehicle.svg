@@ -1,0 +1,36 @@
+<svg width="800" height="450" viewBox="0 0 800 450" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background gradient -->
+  <rect width="800" height="450" fill="url(#bg-gradient)"/>
+  
+  <!-- Vehicle body -->
+  <rect x="200" y="200" width="400" height="150" rx="20" fill="#2C5F7F"/>
+  <rect x="180" y="240" width="440" height="110" rx="15" fill="#3A7CA5"/>
+  
+  <!-- Roof cargo -->
+  <rect x="250" y="160" width="300" height="50" rx="10" fill="#1E3A52"/>
+  
+  <!-- Windows -->
+  <rect x="230" y="215" width="100" height="60" rx="8" fill="#A0C4D9" opacity="0.7"/>
+  <rect x="350" y="215" width="100" height="60" rx="8" fill="#A0C4D9" opacity="0.7"/>
+  <rect x="470" y="215" width="100" height="60" rx="8" fill="#A0C4D9" opacity="0.7"/>
+  
+  <!-- Wheels -->
+  <circle cx="270" cy="350" r="40" fill="#1A1A1A"/>
+  <circle cx="270" cy="350" r="25" fill="#4A4A4A"/>
+  <circle cx="530" cy="350" r="40" fill="#1A1A1A"/>
+  <circle cx="530" cy="350" r="25" fill="#4A4A4A"/>
+  
+  <!-- Headlights -->
+  <circle cx="610" cy="280" r="15" fill="#FFE066" opacity="0.8"/>
+  
+  <!-- Details -->
+  <rect x="190" y="310" width="20" height="30" rx="5" fill="#FF6B6B"/>
+  
+  <!-- Gradients -->
+  <defs>
+    <linearGradient id="bg-gradient" x1="0" y1="0" x2="800" y2="450">
+      <stop offset="0%" stop-color="#87CEEB"/>
+      <stop offset="100%" stop-color="#B0E0E6"/>
+    </linearGradient>
+  </defs>
+</svg>

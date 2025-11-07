@@ -1,0 +1,110 @@
+.active-ride-card {
+  background: linear-gradient(
+    90deg,
+    #FEF3C7 0%,      /* yellow-100 */
+    #FCE7F3 25%,     /* pink-100 */
+    #FDE2F3 50%,     /* pink-200 */
+    #E9D5FF 75%,     /* purple-200 */
+    #DDD6FE 100%     /* purple-300 */
+  );
+  border-radius: 24px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.active-ride-card:active {
+  transform: scale(0.98);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.route-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1.2;
+  margin: 0 0 8px 0;
+}
+
+.status-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.status-ongoing {
+  background-color: #10B981;
+  color: white;
+}
+
+.status-separator {
+  color: #6B7280;
+  font-size: 14px;
+}
+
+.expected-time-text {
+  color: #6B7280;
+  font-size: 14px;
+}
+
+.time-value {
+  font-weight: 500;
+  color: #374151;
+}
+
+.location-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #374151;
+}
+
+.location-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.location-text {
+  font-size: 14px;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .route-title {
+    font-size: 24px;
+  }
+
+  .active-ride-card {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .route-title {
+    font-size: 20px;
+  }
+
+  .status-row {
+    gap: 8px;
+  }
+
+  .status-badge {
+    font-size: 12px;
+    padding: 3px 10px;
+  }
+
+  .expected-time-text,
+  .location-text {
+    font-size: 13px;
+  }
+}

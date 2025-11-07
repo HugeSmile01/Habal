@@ -1,0 +1,143 @@
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #FFFFFF;
+  border-top: 1px solid #E5E7EB;
+  padding: 8px 16px;
+  padding-bottom: calc(8px + env(safe-area-inset-bottom));
+  z-index: 40;
+}
+
+.nav-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  max-width: 1280px;
+  margin: 0 auto;
+  position: relative;
+  height: 56px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 12px;
+}
+
+.nav-item:active {
+  transform: scale(0.95);
+}
+
+.nav-icon {
+  width: 32px;
+  height: 32px;
+  color: #9CA3AF;
+  transition: all 0.3s ease;
+}
+
+.nav-item.active .nav-icon {
+  color: #10B981;
+  transform: scale(1.1);
+}
+
+.nav-item:hover .nav-icon {
+  color: #6B7280;
+}
+
+.nav-item.active:hover .nav-icon {
+  color: #10B981;
+}
+
+/* Center Button (Request Ride) */
+.nav-item-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  top: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.nav-item-center:active {
+  transform: translateX(-50%) translateY(-50%) scale(0.95);
+}
+
+.center-button {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4ADE80 0%, #14B8A6 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(74, 222, 128, 0.4);
+  border: 4px solid white;
+}
+
+.center-icon {
+  width: 36px;
+  height: 36px;
+  color: white;
+}
+
+/* Focus states for accessibility */
+.nav-item:focus-visible,
+.nav-item-center:focus-visible {
+  outline: 2px solid #10B981;
+  outline-offset: 2px;
+}
+
+/* Ensure content doesn't go under fixed navigation */
+.bottom-nav-spacer {
+  height: 80px;
+}
+
+@media (max-width: 768px) {
+  .nav-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .center-button {
+    width: 56px;
+    height: 56px;
+  }
+
+  .center-icon {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-item {
+    width: 44px;
+    height: 44px;
+  }
+
+  .nav-icon {
+    width: 26px;
+    height: 26px;
+  }
+
+  .center-button {
+    width: 52px;
+    height: 52px;
+  }
+
+  .center-icon {
+    width: 28px;
+    height: 28px;
+  }
+}

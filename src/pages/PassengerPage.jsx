@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import RideRequestForm from '../components/RideRequestForm';
 import About from '../components/About';
+import Header from '../components/Header';
+import ActiveRideCard from '../components/ActiveRideCard';
+import HeroImage from '../components/HeroImage';
+import BottomNavigation from '../components/BottomNavigation';
 import { getUserRides } from '../services/rideService';
 import { formatDistance, formatCurrency, formatDateTime } from '../utils/helpers';
 import './PassengerPage.css';
@@ -10,6 +14,7 @@ const PassengerPage = ({ user, onLogout }) => {
   const [showAbout, setShowAbout] = useState(false);
   const [rides, setRides] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [activeNav, setActiveNav] = useState('home');
 
   useEffect(() => {
     loadRides();
@@ -53,30 +58,54 @@ const PassengerPage = ({ user, onLogout }) => {
     return labelMap[status] || status;
   };
 
+  const handleNavigation = (item) => {
+    setActiveNav(item);
+    if (item === 'request-ride') {
+      setShowRequestForm(true);
+    } else if (item === 'profile') {
+      // Could open profile modal or navigate
+      setShowAbout(true);
+    } else if (item === 'home') {
+      setShowRequestForm(false);
+      setShowAbout(false);
+    }
+  };
+
+  const handleMenuClick = () => {
+    // Toggle menu or show options
+    setShowAbout(true);
+  };
+
   return (
     <div className="passenger-page">
-      <header className="page-header">
-        <div className="header-content">
-          <h1>Welcome, {user.fullName}</h1>
-          <div className="header-actions">
-            <button onClick={() => setShowAbout(true)} className="about-link-btn">About</button>
-            <button onClick={onLogout} className="logout-btn">Logout</button>
-          </div>
-        </div>
-      </header>
+      {/* New Header Component */}
+      <Header onMenuClick={handleMenuClick} />
+      <div className="header-spacer"></div>
 
+      {/* Scrollable Content Area */}
       <div className="page-content">
         {!showRequestForm ? (
           <>
-            <div className="action-section">
-              <button 
-                onClick={() => setShowRequestForm(true)}
-                className="request-ride-btn"
-              >
-                + Request a New Ride
-              </button>
+            {/* Active Ride Cards Section */}
+            <div className="ride-card-container">
+              <ActiveRideCard 
+                route="Hingatungan To Silago"
+                status="Ongoing"
+                expectedTime="10 minutes"
+                location="Silago, Southern Leyte"
+              />
+              <ActiveRideCard 
+                route="Laguma To Silago"
+                status="Ongoing"
+                expectedTime="5 minutes"
+                location="Silago, Southern Leyte"
+              />
             </div>
 
+            {/* Hero Image Section */}
+            <HeroImage src="/placeholder-vehicle.svg" alt="Habal ride vehicle" />
+
+            {/* User's Rides History */}
             <div className="rides-history">
               <h2>Your Rides</h2>
               
@@ -85,7 +114,7 @@ const PassengerPage = ({ user, onLogout }) => {
               ) : rides.length === 0 ? (
                 <div className="no-rides">
                   <p>You haven't requested any rides yet.</p>
-                  <p>Click the button above to request your first ride!</p>
+                  <p>Click the button below to request your first ride!</p>
                 </div>
               ) : (
                 <div className="rides-list">
@@ -156,10 +185,14 @@ const PassengerPage = ({ user, onLogout }) => {
         )}
       </div>
 
-      {/* Footer */}
-      <footer className="page-footer">
-        <p>© {new Date().getFullYear()} Habal. All rights reserved. | Developed by <strong>John Rish Ladica</strong></p>
-      </footer>
+      {/* Bottom Navigation Spacer */}
+      <div className="bottom-nav-spacer"></div>
+
+      {/* Bottom Navigation Bar */}
+      <BottomNavigation 
+        activeItem={activeNav}
+        onNavigate={handleNavigation}
+      />
 
       {/* About Modal */}
       {showAbout && <About onClose={() => setShowAbout(false)} />}
