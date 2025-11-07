@@ -60,12 +60,57 @@ export const calculateFee = (distance, baseFare = DEFAULT_BASE_FARE, perKmRate =
  */
 export const createRideRequest = async (rideData) => {
   try {
+    // Validate input data
+    if (!rideData.passengerId || !rideData.passengerName || !rideData.passengerPhone) {
+      return { 
+        success: false, 
+        error: 'Missing required passenger information' 
+      };
+    }
+
+    if (!rideData.pickupLocation?.lat || !rideData.pickupLocation?.lng) {
+      return { 
+        success: false, 
+        error: 'Invalid pickup location' 
+      };
+    }
+
+    if (!rideData.destinationLocation?.lat || !rideData.destinationLocation?.lng) {
+      return { 
+        success: false, 
+        error: 'Invalid destination location' 
+      };
+    }
+
+    if (!rideData.numberOfPassengers || rideData.numberOfPassengers < 1) {
+      return { 
+        success: false, 
+        error: 'Invalid number of passengers' 
+      };
+    }
+
     const distance = calculateDistance(
       rideData.pickupLocation.lat,
       rideData.pickupLocation.lng,
       rideData.destinationLocation.lat,
       rideData.destinationLocation.lng
     );
+
+    // Validate distance
+    if (distance <= 0 || !isFinite(distance)) {
+      return { 
+        success: false, 
+        error: 'Invalid distance calculated. Please check your locations.' 
+      };
+    }
+
+    // Check if distance is too short (less than 100 meters)
+    if (distance < 0.1) {
+      return { 
+        success: false, 
+        error: 'Pickup and destination are too close. Minimum distance is 100 meters.' 
+      };
+    }
 
     const estimatedFee = calculateFee(distance);
 
@@ -97,7 +142,19 @@ export const createRideRequest = async (rideData) => {
     };
   } catch (error) {
     console.error('Create ride request error:', error);
-    return { success: false, error: error.message };
+    
+    // Provide user-friendly error messages
+    let errorMessage = 'Failed to create ride request. Please try again.';
+    
+    if (error.code === 'permission-denied') {
+      errorMessage = 'You do not have permission to create a ride request. Please check your account.';
+    } else if (error.code === 'unavailable') {
+      errorMessage = 'Service temporarily unavailable. Please check your internet connection.';
+    } else if (error.message) {
+      errorMessage = error.message;
+    }
+    
+    return { success: false, error: errorMessage };
   }
 };
 
@@ -106,7 +163,35 @@ export const createRideRequest = async (rideData) => {
  */
 export const acceptRideRequest = async (rideId, driverData) => {
   try {
+    // Validate input
+    if (!rideId) {
+      return { success: false, error: 'Invalid ride ID' };
+    }
+
+    if (!driverData.driverId || !driverData.driverName || !driverData.driverPhone) {
+      return { success: false, error: 'Missing required driver information' };
+    }
+
+    if (!driverData.proposedFee || driverData.proposedFee <= 0) {
+      return { success: false, error: 'Invalid fee amount' };
+    }
+
+    // Check if ride exists and is still available
     const rideRef = doc(db, 'rides', rideId);
+    const rideDoc = await getDoc(rideRef);
+    
+    if (!rideDoc.exists()) {
+      return { success: false, error: 'Ride not found' };
+    }
+
+    const rideData = rideDoc.data();
+    
+    if (rideData.status !== RIDE_STATUS.REQUESTED) {
+      return { 
+        success: false, 
+        error: 'This ride has already been accepted by another driver' 
+      };
+    }
     
     await updateDoc(rideRef, {
       driverId: driverData.driverId,
@@ -122,7 +207,20 @@ export const acceptRideRequest = async (rideId, driverData) => {
     return { success: true };
   } catch (error) {
     console.error('Accept ride error:', error);
-    return { success: false, error: error.message };
+    
+    let errorMessage = 'Failed to accept ride. Please try again.';
+    
+    if (error.code === 'permission-denied') {
+      errorMessage = 'You do not have permission to accept this ride.';
+    } else if (error.code === 'unavailable') {
+      errorMessage = 'Service temporarily unavailable. Please check your internet connection.';
+    } else if (error.code === 'not-found') {
+      errorMessage = 'This ride no longer exists.';
+    } else if (error.message) {
+      errorMessage = error.message;
+    }
+    
+    return { success: false, error: errorMessage };
   }
 };
 

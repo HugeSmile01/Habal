@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { onAuthChange } from './services/authService';
 import { signOut } from './services/authService';
+import { requestNotificationPermission, onForegroundMessage, showNotification, saveFCMToken } from './services/notificationService';
+import { showInfo } from './utils/sweetAlert';
 import AuthPage from './pages/AuthPage';
 import PassengerPage from './pages/PassengerPage';
 import DriverPage from './pages/DriverPage';
@@ -19,12 +21,54 @@ function App() {
         const result = await getCurrentUserProfile(authUser.uid);
         if (result.success) {
           setUser(result.user);
+          
+          // Request notification permission after login
+          setupNotifications(authUser.uid);
         }
       } else {
         // User is signed out
         setUser(null);
       }
       setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  // Setup push notifications
+  const setupNotifications = async (userId) => {
+    try {
+      const result = await requestNotificationPermission();
+      
+      if (result.success) {
+        // Save FCM token to user profile
+        await saveFCMToken(userId, result.token);
+        console.log('Notifications enabled');
+      } else {
+        console.warn('Notifications not enabled:', result.error);
+      }
+    } catch (error) {
+      console.error('Error setting up notifications:', error);
+    }
+  };
+
+  useEffect(() => {
+    // Listen for foreground messages
+    const unsubscribe = onForegroundMessage((payload) => {
+      const { notification, data } = payload;
+      
+      if (notification) {
+        // Show notification
+        showNotification(notification.title, {
+          body: notification.body,
+          data: data
+        });
+        
+        // Also show SweetAlert for important notifications
+        if (data?.type === 'ride_accepted' || data?.type === 'ride_requested') {
+          showInfo(notification.body, notification.title);
+        }
+      }
     });
 
     return () => unsubscribe();
