@@ -19,6 +19,16 @@ const RideRequestForm = ({ user, onSuccess }) => {
   const [destinationSuggestions, setDestinationSuggestions] = useState([]);
   const [showPickupSuggestions, setShowPickupSuggestions] = useState(false);
   const [showDestinationSuggestions, setShowDestinationSuggestions] = useState(false);
+  const [debounceTimer, setDebounceTimer] = useState(null);
+
+  // Cleanup debounce timer on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceTimer) {
+        clearTimeout(debounceTimer);
+      }
+    };
+  }, [debounceTimer]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -60,38 +70,58 @@ const RideRequestForm = ({ user, onSuccess }) => {
     setGettingLocation(false);
   };
 
-  // Handle address autocomplete for pickup
+  // Handle address autocomplete for pickup with debouncing
   const handlePickupAddressChange = async (value) => {
     handleLocationChange('pickupLocation', 'address', value);
     
+    // Clear existing timer
+    if (debounceTimer) {
+      clearTimeout(debounceTimer);
+    }
+    
     if (value.length > 2) {
-      const result = await autocompleteAddress(value);
-      if (result.success && result.suggestions.length > 0) {
-        setPickupSuggestions(result.suggestions);
-        setShowPickupSuggestions(true);
-      } else {
-        setPickupSuggestions([]);
-        setShowPickupSuggestions(false);
-      }
+      // Set new timer for debounced API call
+      const timer = setTimeout(async () => {
+        const result = await autocompleteAddress(value);
+        if (result.success && result.suggestions.length > 0) {
+          setPickupSuggestions(result.suggestions);
+          setShowPickupSuggestions(true);
+        } else {
+          setPickupSuggestions([]);
+          setShowPickupSuggestions(false);
+        }
+      }, 300); // 300ms debounce delay
+      
+      setDebounceTimer(timer);
     } else {
       setPickupSuggestions([]);
       setShowPickupSuggestions(false);
     }
   };
 
-  // Handle address autocomplete for destination
+  // Handle address autocomplete for destination with debouncing
   const handleDestinationAddressChange = async (value) => {
     handleLocationChange('destinationLocation', 'address', value);
     
+    // Clear existing timer
+    if (debounceTimer) {
+      clearTimeout(debounceTimer);
+    }
+    
     if (value.length > 2) {
-      const result = await autocompleteAddress(value);
-      if (result.success && result.suggestions.length > 0) {
-        setDestinationSuggestions(result.suggestions);
-        setShowDestinationSuggestions(true);
-      } else {
-        setDestinationSuggestions([]);
-        setShowDestinationSuggestions(false);
-      }
+      // Set new timer for debounced API call
+      const timer = setTimeout(async () => {
+        const result = await autocompleteAddress(value);
+        if (result.success && result.suggestions.length > 0) {
+          setDestinationSuggestions(result.suggestions);
+          setShowDestinationSuggestions(true);
+        } else {
+          setDestinationSuggestions([]);
+          setShowDestinationSuggestions(false);
+        }
+      }, 300); // 300ms debounce delay
+      
+      setDebounceTimer(timer);
     } else {
       setDestinationSuggestions([]);
       setShowDestinationSuggestions(false);
