@@ -1,18 +1,22 @@
 // Firebase Cloud Messaging Service Worker
 // This file handles background notifications
 
+// ⚠️ IMPORTANT: Replace the Firebase config below with your actual project values!
+// ⚠️ DO NOT deploy to production with these placeholder values!
+// ⚠️ Get your config from: Firebase Console > Project Settings > General > Your apps
+
 importScripts('https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js');
 
 // Initialize Firebase in the service worker
-// Note: These values should match your Firebase config
+// TODO: Replace these placeholder values with your actual Firebase configuration
 firebase.initializeApp({
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "YOUR_API_KEY", // ⚠️ REPLACE THIS
+  authDomain: "YOUR_AUTH_DOMAIN", // ⚠️ REPLACE THIS
+  projectId: "YOUR_PROJECT_ID", // ⚠️ REPLACE THIS
+  storageBucket: "YOUR_STORAGE_BUCKET", // ⚠️ REPLACE THIS
+  messagingSenderId: "YOUR_MESSAGING_SENDER_ID", // ⚠️ REPLACE THIS
+  appId: "YOUR_APP_ID" // ⚠️ REPLACE THIS
 });
 
 const messaging = firebase.messaging();

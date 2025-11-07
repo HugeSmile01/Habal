@@ -29,6 +29,12 @@ VITE_FIREBASE_VAPID_KEY=your_vapid_key_here
 
 ### 3. Service Worker Configuration
 
+⚠️ **CRITICAL SECURITY NOTICE:**
+- **NEVER commit actual Firebase credentials to version control**
+- The `firebase-messaging-sw.js` file contains placeholder values
+- These MUST be replaced with your actual project values before deployment
+- Failure to replace these values will cause notifications to fail
+
 Update the `public/firebase-messaging-sw.js` file with your Firebase config:
 
 ```javascript

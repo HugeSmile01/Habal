@@ -1,5 +1,8 @@
 // Barangays in Silago, Southern Leyte, Philippines
-// Coordinates are approximate and should be verified/adjusted for production use
+// ⚠️ IMPORTANT: Coordinates are approximate center points for each barangay.
+// ⚠️ For production use, verify and update coordinates with accurate GPS data.
+// ⚠️ Consider using actual barangay hall locations or commonly used pickup points.
+// Recommended accuracy: ±50 meters for urban areas, ±100 meters for rural areas.
 export const SILAGO_BARANGAYS = [
   {
     name: 'Abgao',
