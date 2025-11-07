@@ -175,3 +175,71 @@
   }
 }
 
+/* Autocomplete Styling */
+.autocomplete-wrapper {
+  position: relative;
+}
+
+.autocomplete-suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-top: none;
+  border-radius: 0 0 5px 5px;
+  max-height: 250px;
+  overflow-y: auto;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.suggestion-item {
+  padding: 12px 15px;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.2s;
+}
+
+.suggestion-item:hover {
+  background-color: #f5f5f5;
+}
+
+.suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.suggestion-text {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.suggestion-meta {
+  font-size: 12px;
+  color: #666;
+}
+
+/* Mobile Responsive - Autocomplete */
+@media (max-width: 480px) {
+  .autocomplete-suggestions {
+    max-height: 200px;
+  }
+
+  .suggestion-item {
+    padding: 10px 12px;
+  }
+
+  .suggestion-text {
+    font-size: 13px;
+  }
+
+  .suggestion-meta {
+    font-size: 11px;
+  }
+}

@@ -109,12 +109,34 @@ A local-based ride-hailing platform that connects passengers who need rides with
    };
    ```
 
-5. **Run the application**
+5. **Configure Radar.com API (for location services)**
+   
+   a. Create a Radar account at [Radar.com](https://radar.com/)
+   
+   b. Get your API key:
+      - Go to [Radar Dashboard](https://radar.com/dashboard)
+      - Navigate to Settings > API Keys
+      - Copy your "Publishable Key" (starts with `prj_live_` or `prj_test_`)
+   
+   c. Create a `.env.local` file in the root directory:
+      ```bash
+      VITE_RADAR_API_KEY=your_radar_api_key_here
+      ```
+   
+   **Note**: Radar.com is used instead of Google Maps API for:
+   - Forward geocoding (address to coordinates)
+   - Reverse geocoding (coordinates to address)
+   - Address autocomplete
+   - Distance and route calculations
+   
+   Radar provides better features for ride-hailing applications and has a generous free tier.
+
+6. **Run the application**
    ```bash
    npm run dev
    ```
    
-   The application will be available at `http://localhost:3000`
+   The application will be available at `http://localhost:5173` (Vite default port)
 
 ## Usage
 
